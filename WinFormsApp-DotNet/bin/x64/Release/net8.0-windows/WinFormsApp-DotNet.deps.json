@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "WinFormsApp-DotNet/1.0.0": {
+        "dependencies": {
+          "mxnet2DotNetCore": "1.0.9042.23420"
+        },
+        "runtime": {
+          "WinFormsApp-DotNet.dll": {}
+        }
+      },
+      "mxnet2DotNetCore/1.0.9042.23420": {
+        "runtime": {
+          "mxnet2DotNetCore.dll": {
+            "assemblyVersion": "1.0.9042.23420",
+            "fileVersion": "1.0.2.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WinFormsApp-DotNet/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "mxnet2DotNetCore/1.0.9042.23420": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
