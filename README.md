@@ -66,7 +66,7 @@ tail -f syslog | grep mxnet2
 異なっていますのでご留意ください。
 	
 	
-##C　サンプル( Visual Studio 2022プロジェクト )
+## C　サンプル( Visual Studio 2022プロジェクト )
 
 	起動後、MxNet2サーバに接続してライセンスを取得、
 	その後、バックグラウンドでライセンス更新。
@@ -85,9 +85,7 @@ tail -f syslog | grep mxnet2
 	Debugでビルドするとエラーになります。
 
 
-========================================================
-C++　サンプル( Visual Studio 2022プロジェクト / Linux  )
-========================================================
+## C++　サンプル( Visual Studio 2022プロジェクト / Linux  )
 
 	起動後、MxNet2サーバに接続してライセンスを取得、
 	その後、バックグラウンドでライセンス更新。
@@ -128,17 +126,13 @@ C++　サンプル( Visual Studio 2022プロジェクト / Linux  )
 		>sudo ldconfig /usr/lib
 
 
-=======
-C-Linux
-=======
+## C-Linux
 
 	Cサンプルとほぼ同じ動作をします。
 	フォルダ内の readme.txt をご覧ください。
 
 
-==============================================
-C-Sharp-DotNetFramework( Visual Studio 2022 )
-==============================================
+## C-Sharp-DotNetFramework( Visual Studio 2022 )
 
 	.Net Framework のフォームで３つのスレッドで同時に
 	MxNet2サーバとやり取り
@@ -159,9 +153,7 @@ C-Sharp-DotNetFramework( Visual Studio 2022 )
 	DLLのビット数は一致していなければなりません。
 	
 
-========================================
-WinFormsApp-DotNet( Visual Studio 2022 )
-=========================================
+## WinFormsApp-DotNet( Visual Studio 2022 )
 
 	.Net フォームが開くときに MxNet2サーバに接続してライセンスを取得、
 	その後、バックグラウンドでライセンス更新。
@@ -184,18 +176,14 @@ WinFormsApp-DotNet( Visual Studio 2022 )
 	参照設定で正しい DLL をセットしてください。プログラム本体と
 	DLLのビット数は一致していなければなりません。
 
-=====
-Java
-=====
+## Java
 
 	フォルダ内の readmd.txt をご覧ください。
 	APIファイルを正しく配置することで、同一ソースコードで
 	Windows / Linux に対応します。
 
 
-=====
-Excel
-=====
+## Excel
 
 	Excel用DLLを呼び出すことで、MxNet2サーバに接続してライセンスを取得、
 	その後、バックグラウンドでライセンス更新。
