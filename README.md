@@ -17,7 +17,7 @@
 	保持しなければなりません。
 	
 
-##サンプル共通事項（USERCODE, APPSLOT, INTERVALの変更）
+## サンプル共通事項（USERCODE, APPSLOT, INTERVALの変更）
 
 	rLogIn_MatrixNet APIはユーザコードと AppSlot番号を指定して呼び出します。
 	
@@ -29,16 +29,16 @@
 	プログラムが正しく動作するには指定した USBキーの AppSlot にライセンス数がセットされていなければ
 	なりません。 0 になっていると rLogIn_MatrixNetはエラー（-31 ライセンス残無）を返します。
 	
-####USERCODE
+#### USERCODE
 
 お客様に割り当てられたコードに変更してください。
 
-####APPSLOT
+#### APPSLOT
 
 プログラムで指定するドングルの APPSLOT にライセンス数宇が書き込まれていなければなりません
 Webインターフェースの”管理画面２” のドングル設定で AppSlot にライセンス数をセットします。
 
-####INTERVAL
+#### INTERVAL
 
 時間間隔を適宜変更してください。
 
