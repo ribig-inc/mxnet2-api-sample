@@ -18,7 +18,8 @@
 
 using namespace std::chrono_literals;
 
-namespace {
+
+namespace sampleApp{
 
     constexpr _mxINT32   USERCODE = 1234;
     constexpr _mxINT16   APPSLOT = 7;
@@ -64,49 +65,17 @@ namespace {
         return 0;
     }
 
-    bool getLicense()
+    void exitApp()
     {
-        bool        bInitOk = false;
-        short       ret;
-        _mxINT32    serNr;
-
-        ret = rInit_MatrixAPI();
-
-        //Init_MatrixAPI失敗
-        if (ret < 0)
-            goto EXIT1;
-
-        ret = rDongle_Count(85);
-        std::cout << "カウント=" << ret << std::endl;
-        if (ret <= 0)
-            goto EXIT;
-
-        serNr = rDongle_ReadSerNr(USERCODE, 1, 85);
-        std::cout << "シリアル番号=" << serNr << std::endl;
-        if (serNr <= 0)
-            goto EXIT;
-
-        ret = rLogIn_MatrixNet(USERCODE, APPSLOT, 1);
-        std::cout << "Login=" << ret << std::endl;
-        if (ret < 0)
-            goto EXIT;
-
-        bInitOk = true;
-        goto EXIT1;
-
-    EXIT:
-        rRelease_MatrixAPI();
-
-    EXIT1:
-        return bInitOk;
+        std::unique_lock<std::mutex> lck(mtx);
+        g_keyIn = true;
+        cv.notify_one();
     }
+
 }
 
-void exitApp()
-{
-    std::unique_lock<std::mutex> lck(mtx);
-    g_keyIn = true;
-    cv.notify_one();
+namespace mxnet2sample {
+    bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
 }
 
 int main()
@@ -115,12 +84,9 @@ int main()
 
     // MxNet2 API はサーバに接続できないとブロックするため
     // 別スレッドで呼出
-    std::future<bool> detectAsync = std::async(&getLicense);
-
-    //成功時、待っている間に処理完了するはず
+    std::future<bool> detectAsync = std::async(&mxnet2sample::getLicense, sampleApp::USERCODE, sampleApp::APPSLOT);
     std::future_status status = detectAsync.wait_for(500ms);
 
-    //処理完了していなければメッセージ表示
     while (status != std::future_status::ready)
     {
         std::cout << "ライセンス取得中..." << std::endl;
@@ -136,7 +102,7 @@ int main()
     //フォアグラウンドでプログラム処理
 
     //プログラム本体の処理開始
-     app_main();
+    sampleApp::app_main();
 
      return 0;
 }
