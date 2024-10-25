@@ -116,8 +116,11 @@ int main()
     // MxNet2 API はサーバに接続できないとブロックするため
     // 別スレッドで呼出
     std::future<bool> detectAsync = std::async(&getLicense);
+
+    //成功時、待っている間に処理完了するはず
     std::future_status status = detectAsync.wait_for(500ms);
 
+    //処理完了していなければメッセージ表示
     while (status != std::future_status::ready)
     {
         std::cout << "ライセンス取得中..." << std::endl;
