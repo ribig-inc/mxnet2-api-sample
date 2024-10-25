@@ -4,9 +4,49 @@
 
 using namespace std::chrono_literals;
 
-void exitApp();
+namespace sampleApp{
+    void exitApp();
+}
 
 namespace mxnet2sample {
+
+    bool getLicense(_mxINT32 usercode, _mxINT16 appSlot)
+    {
+        bool        bInitOk = false;
+        short       ret;
+        _mxINT32    serNr;
+
+        ret = rInit_MatrixAPI();
+
+        //Init_MatrixAPI失敗
+        if (ret < 0)
+            goto EXIT1;
+
+        ret = rDongle_Count(85);
+        std::cout << "カウント=" << ret << std::endl;
+        if (ret <= 0)
+            goto EXIT;
+
+        serNr = rDongle_ReadSerNr(usercode, 1, 85);
+        std::cout << "シリアル番号=" << serNr << std::endl;
+        if (serNr <= 0)
+            goto EXIT;
+
+        ret = rLogIn_MatrixNet(usercode, appSlot, 1);
+        std::cout << "Login=" << ret << std::endl;
+        if (ret < 0)
+            goto EXIT;
+
+        bInitOk = true;
+        goto EXIT1;
+
+    EXIT:
+        rRelease_MatrixAPI();
+
+    EXIT1:
+        return bInitOk;
+    }
+
 
     LoginUpdate::LoginUpdate(int userCode, short appSlot, int interval) :
         m_interval(interval), m_stop(false), m_userCode(userCode), m_appSlot(appSlot), m_runUpdate(false),
@@ -129,9 +169,9 @@ namespace mxnet2sample {
         rRelease_MatrixAPI();
 
         //メインスレッドはキー押下げ待ちをしている
-        //エラー時、キー押下をしないで終了させる
+        //キー押下をしないで終了させる
         if (obj->m_errorExit == true)
-            exitApp();
+            sampleApp::exitApp();
     }
 
     void LoginUpdate::stop()
