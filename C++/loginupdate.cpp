@@ -53,7 +53,7 @@ namespace mxnet2sample {
         m_errorExit(false)
     {
         m_waitThread = std::thread(WaitProc, this);
-        m_loginUpdateThread = std::thread(loginUpdate, this);
+        m_loginThread = std::thread(login, this);
     }
 
 
@@ -66,7 +66,7 @@ namespace mxnet2sample {
 
     // rLogIn_MatrixNet呼び出し用スレッド
     // 定期的に WaitProcスレッドによって起こされる
-    void LoginUpdate::loginUpdate(LoginUpdate* obj)
+    void LoginUpdate::login(LoginUpdate* obj)
     {
         for (;;)
         {
@@ -162,8 +162,8 @@ namespace mxnet2sample {
         //loginUpdateスレッド終了待ち
         //loginUpdateスレッドが rLoginIn_MatrixNetでブロックしていたら
         //直ぐに終了しない
-        if (obj->m_loginUpdateThread.joinable())
-            obj->m_loginUpdateThread.join();
+        if (obj->m_loginThread.joinable())
+            obj->m_loginThread.join();
 
         //セッション終了
         rRelease_MatrixAPI();
@@ -186,5 +186,4 @@ namespace mxnet2sample {
         if (m_waitThread.joinable())
             m_waitThread.join();
     }
-
 }
