@@ -15,9 +15,7 @@
     #endif
 #endif
 
-
 using namespace std::chrono_literals;
-
 
 namespace sampleApp{
 
@@ -72,10 +70,6 @@ namespace sampleApp{
         cv.notify_one();
     }
 
-}
-
-namespace mxnet2sample {
-    bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
 }
 
 int main()
