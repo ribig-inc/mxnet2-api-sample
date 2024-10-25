@@ -129,7 +129,7 @@ namespace mxnet2sample {
         rRelease_MatrixAPI();
 
         //メインスレッドはキー押下げ待ちをしている
-        //キー押下をしないで終了させる
+        //エラー時、キー押下をしないで終了させる
         if (obj->m_errorExit == true)
             exitApp();
     }
