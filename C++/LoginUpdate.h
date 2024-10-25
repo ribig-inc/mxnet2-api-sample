@@ -12,7 +12,7 @@ namespace mxnet2sample {
 
     class LoginUpdate {
         std::thread     m_waitThread;
-        std::thread     m_loginUpdateThread;
+        std::thread     m_loginThread;
 
         volatile bool   m_stop;
         bool            m_runUpdate;
@@ -34,7 +34,7 @@ namespace mxnet2sample {
         void stop();
         void join();
 
-        static void loginUpdate(LoginUpdate* obj);
+        static void login(LoginUpdate* obj);
         static void WaitProc(LoginUpdate* obj);
     };
 }
