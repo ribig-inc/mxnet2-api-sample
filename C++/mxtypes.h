@@ -10,16 +10,15 @@
 
 
 #ifdef __cplusplus
-	
+	//ribig -->
 	#include <cstdint>
 
 	using _mxINT32=std::int32_t;
 	using _mxUINT32=std::uint32_t;
 	using _mxINT16=std::int16_t;
 	using _mxUINT16=std::uint16_t;
-
+	// <-- ribig
 #else
-
 	#include <limits.h>
 
 	#if ULONG_MAX == 0xffffffff
