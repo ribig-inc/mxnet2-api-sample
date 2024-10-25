@@ -1,9 +1,6 @@
-﻿// test.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
-//
-
-#include "stdafx.h"
-
+﻿#include "stdafx.h"
 #include "mxtypes.h"
+
 #include <iostream>
 #include <string>
 #include <future>
@@ -21,90 +18,95 @@
 
 using namespace std::chrono_literals;
 
-const _mxINT32   USERCODE = 1234;
-const short      APPSLOT = 7;
-const int       INTERVAL = 5;  // second
+namespace {
 
-std::condition_variable cv;
-bool g_keyIn = false;
+    constexpr _mxINT32   USERCODE = 1234;
+    constexpr _mxINT16   APPSLOT = 7;
+    constexpr int        INTERVAL = 5;  // second
+
+    std::mutex mtx;
+    std::condition_variable cv;
+    bool g_keyIn = false;
+
+    void read_key()
+    {
+        char ch;
+        std::cin.get(ch);
+
+        std::unique_lock<std::mutex> lck(mtx);
+        g_keyIn = true;
+        cv.notify_one();
+    }
+
+    void waitForKeyPress()
+    {
+        std::cout << "*** Enterで終了 *** " << std::endl;
+
+        //Enterキーが押されるまで止める
+        std::thread readKey(read_key);
+        readKey.detach();
+
+        std::unique_lock<std::mutex> lck(mtx);
+        cv.wait(lck, [] { return g_keyIn; });
+    }
+
+    static int app_main()
+    {
+        mxnet2sample::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
+
+        waitForKeyPress();
+
+        std::cout << "終了します" << std::endl;
+
+        updater.stop();
+        updater.join();
+
+        return 0;
+    }
+
+    bool getLicense()
+    {
+        bool        bInitOk = false;
+        short       ret;
+        _mxINT32    serNr;
+
+        ret = rInit_MatrixAPI();
+
+        //Init_MatrixAPI失敗
+        if (ret < 0)
+            goto EXIT1;
+
+        ret = rDongle_Count(85);
+        std::cout << "カウント=" << ret << std::endl;
+        if (ret <= 0)
+            goto EXIT;
+
+        serNr = rDongle_ReadSerNr(USERCODE, 1, 85);
+        std::cout << "シリアル番号=" << serNr << std::endl;
+        if (serNr <= 0)
+            goto EXIT;
+
+        ret = rLogIn_MatrixNet(USERCODE, APPSLOT, 1);
+        std::cout << "Login=" << ret << std::endl;
+        if (ret < 0)
+            goto EXIT;
+
+        bInitOk = true;
+        goto EXIT1;
+
+    EXIT:
+        rRelease_MatrixAPI();
+
+    EXIT1:
+        return bInitOk;
+    }
+}
 
 void exitApp()
 {
-    g_keyIn = true;
-    cv.notify_one();
-}
-
-void read_key()
-{
-    char ch;
-    std::cin.get(ch);
-    g_keyIn = true;
-    cv.notify_one();
-}
-
-void waitForKeyPress()
-{
-    std::cout << "*** Enterで終了 *** " << std::endl;
-
-    //Enterキーが押されるまで止める
-    std::thread readKey(read_key);
-    readKey.detach();
-
-    std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
-    cv.wait(lck, [] { return g_keyIn; });
-}
-
-static int app_main()
-{
-    LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
-
-    waitForKeyPress();
-
-    // または関数内で終了
-    std::cout << "終了します" << std::endl;
-
-    updater.stop();
-    updater.join();
-
-    exit(0);
-}
-
-bool getLicense()
-{
-    bool        bInitOk = false;
-    short       ret;
-    _mxINT32    serNr;
-
-    ret = rInit_MatrixAPI();
-
-    //Init_MatrixAPI失敗
-    if (ret < 0)
-        goto EXIT1;
-
-    ret = rDongle_Count(85);
-    std::cout << "カウント=" << ret << std::endl;
-    if (ret <= 0)
-        goto EXIT;
-
-    serNr = rDongle_ReadSerNr(USERCODE, 1, 85);
-    std::cout << "シリアル番号=" << serNr << std::endl;
-    if (serNr <= 0)
-        goto EXIT;
-
-    ret = rLogIn_MatrixNet(USERCODE, APPSLOT, 1);
-    std::cout << "Login=" << ret << std::endl;
-    if (ret < 0)
-        goto EXIT;
-
-    bInitOk = true;
-    goto EXIT1;
-
-EXIT:
-    rRelease_MatrixAPI();
-
-EXIT1:
-    return bInitOk;
+    g_keyIn = true;
+    cv.notify_one();
 }
 
 int main()
@@ -114,9 +116,7 @@ int main()
     // MxNet2 API はサーバに接続できないとブロックするため
     // 別スレッドで呼出
     std::future<bool> detectAsync = std::async(&getLicense);
-    std::future_status status;
-
-    status = detectAsync.wait_for(500ms);
+    std::future_status status = detectAsync.wait_for(500ms);
 
     while (status != std::future_status::ready)
     {
