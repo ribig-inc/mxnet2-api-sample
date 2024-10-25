@@ -10,7 +10,7 @@
 
 namespace mxnet2sample {
 
-bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
+    bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
 
     class LoginUpdate {
         std::thread     m_waitThread;
