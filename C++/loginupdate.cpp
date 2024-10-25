@@ -126,7 +126,7 @@ namespace mxnet2sample {
             //キーが押された
             if (obj->cv.wait_for(lock, std::chrono::seconds(obj->m_interval), [obj] { return obj->m_stop; }))
             {
-                // loginUpdate スレッドを終了させる
+                // login スレッドを終了させる
                 std::lock_guard<std::mutex> lock(obj->mtx_loginUpdate);
                 obj->m_runUpdate = true;
                 obj->cv2.notify_one();
