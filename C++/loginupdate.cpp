@@ -41,6 +41,7 @@ namespace mxnet2sample {
 
                 if (obj->m_stop == true) break;
 
+                //接続不可、サーバにセッションがなければ再接続
                 if (ret == -100 || ret == -105)
                 {
                     for (int retry = 0; retry < 3; retry++)
