@@ -53,8 +53,8 @@ namespace sampleApp{
     {
         mxnet2sample::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
 
+        //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
         waitForKeyPress();
-
         std::cout << "終了します" << std::endl;
 
         updater.stop();
