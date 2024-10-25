@@ -143,13 +143,13 @@ namespace mxnet2sample {
 
                 std::unique_lock<std::mutex> lock(obj->mtx_loginUpdate, std::try_to_lock);
 
-                // loginUpdate スレッド処理中. 何もしない
+                // login スレッド処理中. 何もしない
                 if (!lock)
                 {
                     std::cout << "loginUpdateスレッド処理中..." << std::endl;
                     continue;
                 }
-                // loginUpdate スレッドを起こす
+                // login スレッドを起こす
                 else
                 {
                     obj->m_runUpdate = true;
@@ -159,8 +159,8 @@ namespace mxnet2sample {
         }
 
 
-        //loginUpdateスレッド終了待ち
-        //loginUpdateスレッドが rLoginIn_MatrixNetでブロックしていたら
+        //login スレッド終了待ち
+        //login スレッドが rLoginIn_MatrixNetでブロックしていたら
         //直ぐに終了しない
         if (obj->m_loginThread.joinable())
             obj->m_loginThread.join();
