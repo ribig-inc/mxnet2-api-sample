@@ -14,7 +14,7 @@ namespace mxnet2sample {
         std::thread     m_waitThread;
         std::thread     m_loginUpdateThread;
 
-        bool            m_stop;
+        volatile bool   m_stop;
         bool            m_runUpdate;
         bool            m_errorExit;
 
