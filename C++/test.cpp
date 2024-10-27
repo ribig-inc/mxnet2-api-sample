@@ -51,21 +51,22 @@ namespace sampleApp{
 
     static int app_main()
     {
-         //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
+         //５秒毎に LogIn_MatrixNet 呼出してライセンス更新処理をバックグラウンドで開始。
+        //制御はすぐに戻る
         mxnet2sample::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
 
-        //フォアグラウンドでプログラム処理
-        //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
+        //プログラムのフォアグラウンド処理
+        //ここではEnterキーが押されるまで待つ
         waitForKeyPress();
         
         std::cout << "終了します" << std::endl;
 
-        //LoginUpdateのデストラクタが呼び出されない場合 stop/join
+        //LoginUpdateのデストラクタが呼び出されない場合 stop/joinでバックグランド処理を止める
         //updater.stop();
         //updater.join();
         //exit(0);
 
-        //スコープを抜けるとき LoginUpdateデストラクタが呼び出される
+        //スコープを抜けるとき LoginUpdateデストラクタが呼び出される（自動でバックグランド処理停止）
         return 0;
     }
 
