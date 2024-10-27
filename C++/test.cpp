@@ -61,12 +61,13 @@ namespace sampleApp{
         
         std::cout << "終了します" << std::endl;
 
-        //LoginUpdateのデストラクタが呼び出されない場合 stop/joinでバックグランド処理を止める
-        //updater.stop();
+        updater.stop();
+        
+        //LoginUpdateのデストラクタが呼び出されない場合 joinでバックグランド処理停止待ち
         //updater.join();
         //exit(0);
 
-        //スコープを抜けるとき LoginUpdateデストラクタが呼び出される（自動でバックグランド処理停止）
+        //スコープを抜けるとき LoginUpdateデストラクタが呼び出される（自動でバックグランド処理停止待ち）
         return 0;
     }
 
