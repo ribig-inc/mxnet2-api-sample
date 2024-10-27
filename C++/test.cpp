@@ -57,11 +57,15 @@ namespace sampleApp{
         //フォアグラウンドでプログラム処理
         //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
         waitForKeyPress();
+        
         std::cout << "終了します" << std::endl;
 
-        updater.stop();
-        updater.join();
+        //LoginUpdateのデストラクタが呼び出されない場合 stop/join
+        //updater.stop();
+        //updater.join();
+        //exit(0);
 
+        //スコープを抜けるとき LoginUpdateデストラクタが呼び出される
         return 0;
     }
 
