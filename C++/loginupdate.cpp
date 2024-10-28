@@ -176,6 +176,7 @@ namespace mxnet2license {
 
     void LoginUpdate::stop()
     {
+        // m_loginThreadスレッドを終了させる
         if (m_stop == false)
         {
             std::lock_guard<std::mutex> lock(mtx_wait);
@@ -183,6 +184,8 @@ namespace mxnet2license {
             cv.notify_one();
         }
 
+        // m_waitThread内で m_loginThreadスレッド終了待
+        // ここで、m_waitThread終了待ち
         if (m_waitThread.joinable())
             m_waitThread.join();
     }
