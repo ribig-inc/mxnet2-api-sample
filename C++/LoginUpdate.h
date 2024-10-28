@@ -34,7 +34,6 @@ namespace mxnet2sample {
         LoginUpdate(int userCode, short appSlot, int interval);
         ~LoginUpdate();
         void stop();
-        void join();
 
         static void login(LoginUpdate* obj);
         static void WaitProc(LoginUpdate* obj);
