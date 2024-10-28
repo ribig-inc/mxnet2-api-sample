@@ -59,8 +59,8 @@ namespace mxnet2sample {
 
     LoginUpdate::~LoginUpdate()
     {
-        if (m_waitThread.joinable())
-            m_waitThread.join();
+       //std::cout << "LoginUpdate Destructor " << std::endl;
+       stop();
     }
 
 
@@ -176,13 +176,13 @@ namespace mxnet2sample {
 
     void LoginUpdate::stop()
     {
-        std::lock_guard<std::mutex> lock(mtx_wait);
-        m_stop = true;
-        cv.notify_one();
-    }
+        if (m_stop == false)
+        {
+            std::lock_guard<std::mutex> lock(mtx_wait);
+            m_stop = true;
+            cv.notify_one();
+        }
 
-    void LoginUpdate::join()
-    {
         if (m_waitThread.joinable())
             m_waitThread.join();
     }
