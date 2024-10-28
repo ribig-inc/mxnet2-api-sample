@@ -10,6 +10,8 @@
     #define WINAPI
 #endif
 
+namespace mxnet2 {
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,6 +75,7 @@ void  WINAPI rReset_MatrixAPI(void);
 }
 #endif
 
+}
 
 #endif  // _MXNET2API_H
 
