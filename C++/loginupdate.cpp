@@ -8,7 +8,7 @@ namespace sampleApp{
     void exitApp();
 }
 
-namespace mxnet2sample {
+namespace mxnet2license {
 
     bool getLicense(_mxINT32 usercode, _mxINT16 appSlot)
     {
@@ -16,23 +16,23 @@ namespace mxnet2sample {
         short       ret;
         _mxINT32    serNr;
 
-        ret = rInit_MatrixAPI();
+        ret = mxnet2::rInit_MatrixAPI();
 
         //Init_MatrixAPI失敗
         if (ret < 0)
             goto EXIT1;
 
-        ret = rDongle_Count(85);
+        ret = mxnet2::rDongle_Count(85);
         std::cout << "カウント=" << ret << std::endl;
         if (ret <= 0)
             goto EXIT;
 
-        serNr = rDongle_ReadSerNr(usercode, 1, 85);
+        serNr = mxnet2::rDongle_ReadSerNr(usercode, 1, 85);
         std::cout << "シリアル番号=" << serNr << std::endl;
         if (serNr <= 0)
             goto EXIT;
 
-        ret = rLogIn_MatrixNet(usercode, appSlot, 1);
+        ret = mxnet2::rLogIn_MatrixNet(usercode, appSlot, 1);
         std::cout << "Login=" << ret << std::endl;
         if (ret < 0)
             goto EXIT;
@@ -41,7 +41,7 @@ namespace mxnet2sample {
         goto EXIT1;
 
     EXIT:
-        rRelease_MatrixAPI();
+        mxnet2::rRelease_MatrixAPI();
 
     EXIT1:
         return bInitOk;
@@ -59,8 +59,8 @@ namespace mxnet2sample {
 
     LoginUpdate::~LoginUpdate()
     {
-       //std::cout << "LoginUpdate Destructor " << std::endl;
-       stop();
+        //std::cout << "LoginUpdate Destructor " << std::endl;
+        stop();
     }
 
 
@@ -76,7 +76,7 @@ namespace mxnet2sample {
             {
                 if (obj->m_stop == true) break;
 
-                short ret = rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
+                short ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
                 std::cout << ">>login=" << ret << std::endl;
 
                 if (obj->m_stop == true) break;
@@ -86,7 +86,7 @@ namespace mxnet2sample {
                 {
                     for (int retry = 0; retry < 3; retry++)
                     {
-                        ret = rInit_MatrixAPI();
+                        ret = mxnet2::rInit_MatrixAPI();
                         if (ret > 0 || obj->m_stop == true) break;
                     }
                 }
@@ -159,14 +159,14 @@ namespace mxnet2sample {
         }
 
 
-        //login スレッド終了待ち
-        //login スレッドが rLoginIn_MatrixNetでブロックしていたら
+        //loginスレッド終了待ち
+        //loginスレッドが rLoginIn_MatrixNetでブロックしていたら
         //直ぐに終了しない
         if (obj->m_loginThread.joinable())
             obj->m_loginThread.join();
 
         //セッション終了
-        rRelease_MatrixAPI();
+        mxnet2::rRelease_MatrixAPI();
 
         //メインスレッドはキー押下げ待ちをしている
         //キー押下をしないで終了させる
@@ -186,4 +186,6 @@ namespace mxnet2sample {
         if (m_waitThread.joinable())
             m_waitThread.join();
     }
+
+
 }
