@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+﻿
+#include "stdafx.h"
 #include "mxtypes.h"
 
 #include <iostream>
@@ -6,7 +7,6 @@
 #include <future>
 #include <locale>
 
-#include "mxnet2api.h"
 #include "LoginUpdate.h"
 
 #ifdef  _MSC_VER
@@ -17,11 +17,13 @@
     #endif
 #endif
 
+
 using namespace std::chrono_literals;
+
 
 namespace sampleApp{
 
-    constexpr _mxINT32   USERCODE = 1234;
+    constexpr _mxINT32   USERCODE = 34219;
     constexpr _mxINT16   APPSLOT = 7;
     constexpr int        INTERVAL = 5;  // second
 
@@ -53,26 +55,26 @@ namespace sampleApp{
 
     static int app_main()
     {
-         //５秒毎に LogIn_MatrixNet 呼出してライセンス更新処理をバックグラウンドで開始。
-        //制御はすぐに戻る
-        mxnet2sample::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
-
-        //プログラムのフォアグラウンド処理
-        //ここではEnterキーが押されるまで待つ
-        waitForKeyPress();
         
+        //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
+        mxnet2license::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
+
+        //フォアグラウンドでプログラム処理
+        //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
+        waitForKeyPress();
         std::cout << "終了します" << std::endl;
 
+
         // LoginUpdateのデストラクタが呼び出されない場合、
-       // 明示的に止める
-       //updater.stop();
-       //exit(0);
+        // 明示的に止める
+        //updater.stop();
+        //exit(0);
 
-       return 0;
+        return 0;
 
-       //スコープを抜ける
-       //loginUpdate デストラクタ呼び出し
-     }
+        //スコープを抜ける
+        //loginUpdate デストラクタ呼び出し
+    }
 
     void exitApp()
     {
@@ -83,13 +85,14 @@ namespace sampleApp{
 
 }
 
+
 int main()
 {
      std::setlocale(LC_ALL, "");
 
     // MxNet2 API はサーバに接続できないとブロックするため
     // 別スレッドで呼出
-    std::future<bool> detectAsync = std::async(&mxnet2sample::getLicense, sampleApp::USERCODE, sampleApp::APPSLOT);
+    std::future<bool> detectAsync = std::async(&mxnet2license::getLicense, sampleApp::USERCODE, sampleApp::APPSLOT);
 
     //しばらく待つ　サーバに問題なく接続できれば、待っている間に処理は完了するはずなので
     //メッセージ表示されずに sampleApp::app_main()行へ
@@ -105,6 +108,7 @@ int main()
         std::cout << "ライセンスを取得できませんでした" << std::endl;
         return -1;
     }
+
 
     //プログラム本体の処理開始
     sampleApp::app_main();
