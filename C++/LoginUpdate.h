@@ -8,7 +8,7 @@
 #include <future>
 #include "mxtypes.h"
 
-namespace mxnet2sample {
+namespace mxnet2license {
 
     bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
 
