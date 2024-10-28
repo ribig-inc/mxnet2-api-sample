@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <future>
+#include <locale>
+
 #include "mxnet2api.h"
 #include "LoginUpdate.h"
 
@@ -83,7 +85,7 @@ namespace sampleApp{
 
 int main()
 {
-     setlocale(LC_ALL, "");
+     std::setlocale(LC_ALL, "");
 
     // MxNet2 API はサーバに接続できないとブロックするため
     // 別スレッドで呼出
