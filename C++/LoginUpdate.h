@@ -37,6 +37,7 @@ namespace mxnet2license {
 
         LoginUpdate(int userCode, short appSlot, int interval);
         ~LoginUpdate();
+        void start();
         void stop();
 
         static void login(LoginUpdate* obj);
