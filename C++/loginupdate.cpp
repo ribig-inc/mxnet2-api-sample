@@ -50,12 +50,13 @@ namespace mxnet2license {
 
     LoginUpdate::LoginUpdate(int userCode, short appSlot, int interval) :
         m_interval(interval), m_stop(false), m_userCode(userCode), m_appSlot(appSlot), m_runUpdate(false),
-        m_errorExit(false)
-    {
-        m_waitThread = std::thread(WaitProc, this);
-        m_loginThread = std::thread(login, this);
-    }
+        m_errorExit(false) {}
 
+    void LoginUpdate::start()
+    {
+        m_loginThread = std::thread(login, this);
+        m_waitThread = std::thread(WaitProc, this);
+    }
 
     LoginUpdate::~LoginUpdate()
     {
@@ -165,9 +166,6 @@ namespace mxnet2license {
         if (obj->m_loginThread.joinable())
             obj->m_loginThread.join();
 
-        //セッション終了
-        mxnet2::rRelease_MatrixAPI();
-
         //メインスレッドはキー押下げ待ちをしている
         //キー押下をしないで終了させる
         if (obj->m_errorExit == true)
@@ -188,6 +186,9 @@ namespace mxnet2license {
         // ここで、m_waitThread終了待ち
         if (m_waitThread.joinable())
             m_waitThread.join();
+
+        //セッション終了
+        mxnet2::rRelease_MatrixAPI();
     }
 
 
