@@ -101,6 +101,7 @@ namespace mxnet2license {
                 short ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
                 std::cout << ">>login=" << ret << std::endl;
 
+                //m_stopを確認することで、できるだけ早くスレッドを終了できる
                 if (obj->m_stop == true) break;
 
                 bool bOk = true;
