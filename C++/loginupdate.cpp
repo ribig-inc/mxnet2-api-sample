@@ -93,7 +93,7 @@ namespace mxnet2license {
                 }
 
 
-                //エラ-　/ m_stop で終了
+                //エラ-　/ m_stop でプログラムをエラー終了させる
                 if (ret <= 0 || obj->m_stop == true) {
                     obj->m_errorExit = true;
                     obj->stop();
