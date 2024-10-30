@@ -29,6 +29,8 @@ namespace mxnet2license {
         std::condition_variable      cv;
         std::condition_variable      cv2;
 
+        void stopWaitThread();
+        void stopLoginThread();
 
     public:
         LoginUpdate() = delete;
