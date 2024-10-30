@@ -208,7 +208,6 @@ namespace mxnet2license {
             }
         }
 
-
         //loginスレッド終了待ち
         //loginスレッドが rLoginIn_MatrixNetでブロックしていたら
         //直ぐに終了しない
