@@ -64,9 +64,11 @@ namespace mxnet2license {
         m_waitThread = std::thread(WaitProc, this);
     }
 
-    void LoginUpdate::stopWaitThread()
+   void LoginUpdate::stopWaitThread()
    {
-        //m_stop==true 既に止められているので何もしない
+        //m_stopで waitスレッドを止めようとすると loginスレッドを止めるが、
+        //loginスレッドが止まるとき、waitスレッドを止めようとする。
+        //m_stop==true　既に止められているので何もしない（ループ防止)
         if (m_stop == false)
         {
             std::lock_guard<std::mutex> lock(mtx_wait);
