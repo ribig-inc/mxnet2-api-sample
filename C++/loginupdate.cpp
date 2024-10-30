@@ -95,8 +95,8 @@ namespace mxnet2license {
 
                 //エラ-　/ m_stop で終了
                 if (ret <= 0 || obj->m_stop == true) {
-                    obj->stop();
                     obj->m_errorExit = true;
+                    obj->stop();
                     break;
                 }
 
