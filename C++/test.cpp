@@ -55,9 +55,17 @@ namespace sampleApp{
 
     static int app_main()
     {
-        
-        //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
         mxnet2license::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
+
+        //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
+        try {
+            updater.start();
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+            return -1;
+        }
 
         //フォアグラウンドでプログラム処理
         //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
@@ -109,9 +117,6 @@ int main()
         return -1;
     }
 
-
     //プログラム本体の処理開始
-    sampleApp::app_main();
-
-     return 0;
+    return sampleApp::app_main();
 }
