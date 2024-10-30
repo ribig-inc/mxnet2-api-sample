@@ -61,8 +61,8 @@ namespace sampleApp{
 
        mxnet2license::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
 
-       //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
        try {
+           //LoginUpdate バックグラウンド処理開始（５秒毎に LogIn_MatrixNet 呼出してライセンス更新)
            updater.start();
 
            //フォアグラウンドでプログラム処理
@@ -84,7 +84,7 @@ namespace sampleApp{
        return retVal;
 
         //スコープを抜ける
-        //loginUpdate デストラクタ呼び出し
+        //loginUpdate バックグランド処理停止（デストラクタ呼び出し）
     }
 }
 
