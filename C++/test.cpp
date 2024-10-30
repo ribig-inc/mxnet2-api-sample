@@ -1,7 +1,6 @@
 ﻿
 #include "stdafx.h"
 #include "mxtypes.h"
-
 #include <iostream>
 #include <string>
 #include <future>
@@ -17,9 +16,7 @@
     #endif
 #endif
 
-
 using namespace std::chrono_literals;
-
 
 namespace sampleApp{
 
@@ -68,12 +65,10 @@ namespace sampleApp{
        try {
            updater.start();
 
-
            //フォアグラウンドでプログラム処理
            //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
            waitForKeyPress();
            std::cout << "終了します" << std::endl;
-
 
            // LoginUpdateのデストラクタが呼び出されない場合、
            // 明示的に止める
