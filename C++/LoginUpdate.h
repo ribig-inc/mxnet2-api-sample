@@ -12,7 +12,7 @@ namespace mxnet2license {
 
     bool getLicense(_mxINT32 usercode, _mxINT16 appSlot);
 
-    class LoginUpdate {
+    class LoginUpdate final{
         std::thread     m_waitThread;
         std::thread     m_loginThread;
 
@@ -31,6 +31,10 @@ namespace mxnet2license {
 
 
     public:
+        LoginUpdate() = delete;
+        LoginUpdate(const LoginUpdate&) = delete;
+        LoginUpdate& operator=(const LoginUpdate&) = delete;
+
         LoginUpdate(int userCode, short appSlot, int interval);
         ~LoginUpdate();
         void stop();
