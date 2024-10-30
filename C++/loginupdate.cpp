@@ -105,7 +105,8 @@ namespace mxnet2license {
                        obj->m_stop = true;
                        obj->cv.notify_one();
                    }
-
+                       
+                　　// このスレッドは終了
                    break;
                }
 
