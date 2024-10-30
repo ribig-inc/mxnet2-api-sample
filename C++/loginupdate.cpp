@@ -108,6 +108,8 @@ namespace mxnet2license {
 
                 if (ret < 0)
                 {
+                    bOk=false;
+                    
                     //再試行
                     //-100　接続可能であってもクライアント接続が多すぎたり/回線不安定だと接続不能になることがあるため
                     //-105  セッションタイムアウトでセッション解放 / サーバが落ちてセッション開放
@@ -120,31 +122,37 @@ namespace mxnet2license {
                             if (ret == -105)
                             {
                                 ret = mxnet2::rInit_MatrixAPI();
-                                if (ret > 0) break;
+                                if (ret > 0)
+                                {
+                                    bOk=true;
+                                    break;
+                                }
                             }
                             else
                             {
                                 ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
-                                if (ret >= 0) break;
+                                if (ret >= 0)
+                                {
+                                    bOk=true;
+                                    break;
+                                }
                             }
                             if (obj->m_stop == true) break;
                         }
-                        bOk = false;
                     }
-                    else
-                        bOk = false;
                 }
 
-                //エラ-　/ m_stop でプログラムはエラー終了
-                if (bOk==false || obj->m_stop == true) {
+                if (obj->m_stop == true) break;
 
+                //エラ-でプログラムはエラー終了
+                if (bOk==false) {
                     //エラー発生フラッグ
-                    if( bOk==false) obj->m_errorExit = true;
+                    obj->m_errorExit = true;
 
                     //waitスレッドを止める
                     obj->stopWaitThread();
 
-                    //このスレッドは終了
+                    //このスレッド終了
                     break;
                 }
 
