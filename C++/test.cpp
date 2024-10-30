@@ -31,14 +31,19 @@ namespace sampleApp{
     std::condition_variable cv;
     bool g_keyIn = false;
 
+    void exitApp()
+    {
+        std::unique_lock<std::mutex> lck(mtx);
+        g_keyIn = true;
+        cv.notify_one();
+    }
+
     void read_key()
     {
         char ch;
         std::cin.get(ch);
 
-        std::unique_lock<std::mutex> lck(mtx);
-        g_keyIn = true;
-        cv.notify_one();
+        exitApp();
     }
 
     void waitForKeyPress()
@@ -86,14 +91,6 @@ namespace sampleApp{
         //スコープを抜ける
         //loginUpdate デストラクタ呼び出し
     }
-
-    void exitApp()
-    {
-        std::unique_lock<std::mutex> lck(mtx);
-        g_keyIn = true;
-        cv.notify_one();
-    }
-
 }
 
 
