@@ -55,30 +55,33 @@ namespace sampleApp{
 
     static int app_main()
     {
-        mxnet2license::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
+        int retVal = 0;
 
-        //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
-        try {
-            updater.start();
-        }
-        catch (std::exception& e)
-        {
-            std::cout << e.what() << std::endl;
-            return -1;
-        }
+       mxnet2license::LoginUpdate updater(USERCODE, APPSLOT, INTERVAL);
 
-        //フォアグラウンドでプログラム処理
-        //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
-        waitForKeyPress();
-        std::cout << "終了します" << std::endl;
+       //LoginUpdate バックグラウンドで５秒毎に LogIn_MatrixNet 呼出してライセンス取得/更新
+       try {
+           updater.start();
 
 
-        // LoginUpdateのデストラクタが呼び出されない場合、
-        // 明示的に止める
-        //updater.stop();
-        //exit(0);
+           //フォアグラウンドでプログラム処理
+           //Enterキーが押されるまで待つ（またはプログラム開始コードに置き換える）
+           waitForKeyPress();
+           std::cout << "終了します" << std::endl;
 
-        return 0;
+
+           // LoginUpdateのデストラクタが呼び出されない場合、
+           // 明示的に止める
+           //updater.stop();
+           //exit(0);
+       }
+       catch (std::exception& e)
+       {
+           std::cout << "Exception raised: " << e.what() << std::endl;
+           retVal = -1;
+       }
+
+       return retVal;
 
         //スコープを抜ける
         //loginUpdate デストラクタ呼び出し
