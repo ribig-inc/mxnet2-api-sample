@@ -66,10 +66,9 @@ namespace mxnet2license {
 
    void LoginUpdate::stopWaitThread()
    {
-        //エラー発生で stopWaitThread()を呼び出して waitスレッドを止める
-        // waitスレッドは止まる前に loginスレッドを止ようとする
-        //loginスレッドが止まる前に waitスレッドを止めようとする。
-        //m_stop==true　既に止められているので何もしない（ループ防止)
+        //エラーでプログラムを終了させるとき２度呼び出される
+        //デストラクタでも呼び出される
+        //一度 呼び出されたら以降は何もしない（ループ防止）
         if (m_stop == false)
         {
             std::lock_guard<std::mutex> lock(mtx_wait);
