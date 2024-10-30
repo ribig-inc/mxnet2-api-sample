@@ -65,7 +65,8 @@ namespace mxnet2license {
     }
 
     void LoginUpdate::stopWaitThread()
-    {
+   {
+        //m_stop==true 既に止められているので何もしない
         if (m_stop == false)
         {
             std::lock_guard<std::mutex> lock(mtx_wait);
@@ -76,12 +77,9 @@ namespace mxnet2license {
 
     void LoginUpdate::stopLoginThread()
     {
-        if (m_runUpdate == false)
-        {
-            std::lock_guard<std::mutex> lock(mtx_loginUpdate);
-            m_runUpdate = true;
-            cv2.notify_one();
-        }
+         std::lock_guard<std::mutex> lock(mtx_loginUpdate);
+         m_runUpdate = true;
+         cv2.notify_one();
     }
 
     // rLogIn_MatrixNet呼び出し用スレッド
