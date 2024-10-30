@@ -52,19 +52,37 @@ namespace mxnet2license {
         m_interval(interval), m_stop(false), m_userCode(userCode), m_appSlot(appSlot), m_runUpdate(false),
         m_errorExit(false) {}
 
-    void LoginUpdate::start()
-    {
-        m_loginThread = std::thread(login, this);
-        m_waitThread = std::thread(WaitProc, this);
-    }
-
     LoginUpdate::~LoginUpdate()
     {
         //std::cout << "LoginUpdate Destructor " << std::endl;
         stop();
     }
 
+    void LoginUpdate::start()
+    {
+        m_loginThread = std::thread(login, this);
+        m_waitThread = std::thread(WaitProc, this);
+    }
 
+    void LoginUpdate::stopWaitThread()
+    {
+        if (m_stop == false)
+        {
+            std::lock_guard<std::mutex> lock(mtx_wait);
+            m_stop = true;
+            cv.notify_one();
+        }
+    }
+
+    void LoginUpdate::stopLoginThread()
+    {
+        if (m_runUpdate == false)
+        {
+            std::lock_guard<std::mutex> lock(mtx_loginUpdate);
+            m_runUpdate = true;
+            cv2.notify_one();
+        }
+    }
     // rLogIn_MatrixNet呼び出し用スレッド
     // 定期的に WaitProcスレッドによって起こされる
     void LoginUpdate::login(LoginUpdate* obj)
@@ -82,33 +100,51 @@ namespace mxnet2license {
 
                 if (obj->m_stop == true) break;
 
-                //接続不可、サーバにセッションがなければ再接続
-                if (ret == -100 || ret == -105)
+                bool bOk = true;
+
+                if (ret < 0)
                 {
-                    for (int retry = 0; retry < 3; retry++)
+                    //再試行
+                    //-100　接続可能であってもクライアント接続が多すぎたり/回線不安定だと接続不能になることがあるため
+                    //-105  セッションタイムアウトでセッション解放 / サーバが落ちてセッション開放
+                    if (ret == -100 || ret == -105)
                     {
-                        ret = mxnet2::rInit_MatrixAPI();
-                        if (ret > 0 || obj->m_stop == true) break;
+                        for (int retry = 0; retry < 3; retry++)
+                        {
+                            std::this_thread::sleep_for(250ms);
+
+                            if (ret == -105)
+                            {
+                                ret = mxnet2::rInit_MatrixAPI();
+                                if (ret > 0) break;
+                            }
+                            else
+                            {
+                                ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
+                                if (ret >= 0) break;
+                            }
+
+                            if (obj->m_stop == true) break;
+                        }
+
+                        bOk = false;
                     }
+                    else
+                        bOk = false;
                 }
 
+                //エラ-　/ m_stop でプログラムはエラー終了
+                if (bOk==false || obj->m_stop == true) {
 
-               //エラ-　/ m_stop でプログラムはエラー終了
-               if (ret <= 0 || obj->m_stop == true) {
+                    //エラー発生フラッグ
+                    obj->m_errorExit = true;
 
-                   obj->m_errorExit = true;
+                    //waitスレッドを止める
+                    obj->stopWaitThread();
 
-                   //waitスレッドを止める
-                   if (obj->m_stop == false)
-                   {
-                       std::lock_guard<std::mutex> lock(obj->mtx_wait);
-                       obj->m_stop = true;
-                       obj->cv.notify_one();
-                   }
-                       
-                　　// このスレッドは終了
-                   break;
-               }
+                    //このスレッドは終了
+                    break;
+                }
 
                 //処理が長引いたら 1。。。
                 //std::this_thread::sleep_for(6s);
@@ -119,10 +155,7 @@ namespace mxnet2license {
 
                 //処理終了
                 obj->m_runUpdate = false;
-
             }
-
-
         }
     }
 
@@ -138,9 +171,7 @@ namespace mxnet2license {
             if (obj->cv.wait_for(lock, std::chrono::seconds(obj->m_interval), [obj] { return obj->m_stop; }))
             {
                 // login スレッドを終了させる
-                std::lock_guard<std::mutex> lock(obj->mtx_loginUpdate);
-                obj->m_runUpdate = true;
-                obj->cv2.notify_one();
+                obj->stopLoginThread();
 
                 //このスレッド終了
                 break;
@@ -148,7 +179,6 @@ namespace mxnet2license {
             //m_intervalタイムアウト
             else
             {
-
                 //別スレッドで LogIn_MatrixNetを呼び出す
                 //(このスレッドでは LogIn_MatrixNet呼出でブロックしないように )          
 
@@ -184,14 +214,9 @@ namespace mxnet2license {
 
     void LoginUpdate::stop()
     {
-        // m_loginThreadスレッドを終了させる
-        if (m_stop == false)
-        {
-            std::lock_guard<std::mutex> lock(mtx_wait);
-            m_stop = true;
-            cv.notify_one();
-        }
-
+        // waitスレッドを終了させる
+        stopWaitThread();
+        
         // m_waitThread内で m_loginThreadスレッド終了待
         // ここで、m_waitThread終了待ち
         if (m_waitThread.joinable())
@@ -200,6 +225,4 @@ namespace mxnet2license {
         //セッション終了
         mxnet2::rRelease_MatrixAPI();
     }
-
-
 }
