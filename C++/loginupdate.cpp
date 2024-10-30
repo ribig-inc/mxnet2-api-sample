@@ -83,6 +83,7 @@ namespace mxnet2license {
             cv2.notify_one();
         }
     }
+
     // rLogIn_MatrixNet呼び出し用スレッド
     // 定期的に WaitProcスレッドによって起こされる
     void LoginUpdate::login(LoginUpdate* obj)
@@ -123,10 +124,8 @@ namespace mxnet2license {
                                 ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
                                 if (ret >= 0) break;
                             }
-
                             if (obj->m_stop == true) break;
                         }
-
                         bOk = false;
                     }
                     else
@@ -135,7 +134,6 @@ namespace mxnet2license {
 
                 //エラ-　/ m_stop でプログラムはエラー終了
                 if (bOk==false || obj->m_stop == true) {
-
                     //エラー発生フラッグ
                     obj->m_errorExit = true;
 
@@ -181,7 +179,6 @@ namespace mxnet2license {
             {
                 //別スレッドで LogIn_MatrixNetを呼び出す
                 //(このスレッドでは LogIn_MatrixNet呼出でブロックしないように )          
-
                 std::unique_lock<std::mutex> lock(obj->mtx_loginUpdate, std::try_to_lock);
 
                 // login スレッド処理中. 何もしない
