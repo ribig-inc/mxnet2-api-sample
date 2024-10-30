@@ -137,8 +137,9 @@ namespace mxnet2license {
 
                 //エラ-　/ m_stop でプログラムはエラー終了
                 if (bOk==false || obj->m_stop == true) {
+
                     //エラー発生フラッグ
-                    obj->m_errorExit = true;
+                    if( bOk==false) obj->m_errorExit = true;
 
                     //waitスレッドを止める
                     obj->stopWaitThread();
