@@ -66,8 +66,9 @@ namespace mxnet2license {
 
    void LoginUpdate::stopWaitThread()
    {
-        //m_stopで waitスレッドを止めようとすると loginスレッドを止めるが、
-        //loginスレッドが止まるとき、waitスレッドを止めようとする。
+        //エラー発生で stopWaitThread()を呼び出して waitスレッドを止める
+        // waitスレッドは止まる前に loginスレッドを止ようとする
+        //loginスレッドが止まる前に waitスレッドを止めようとする。
         //m_stop==true　既に止められているので何もしない（ループ防止)
         if (m_stop == false)
         {
