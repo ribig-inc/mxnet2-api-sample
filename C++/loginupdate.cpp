@@ -93,12 +93,21 @@ namespace mxnet2license {
                 }
 
 
-                //エラ-　/ m_stop でプログラムをエラー終了させる
-                if (ret <= 0 || obj->m_stop == true) {
-                    obj->m_errorExit = true;
-                    obj->stop();
-                    break;
-                }
+               //エラ-　/ m_stop でプログラムはエラー終了
+               if (ret <= 0 || obj->m_stop == true) {
+
+                   obj->m_errorExit = true;
+
+                   //waitスレッドを止める
+                   if (obj->m_stop == false)
+                   {
+                       std::lock_guard<std::mutex> lock(obj->mtx_wait);
+                       obj->m_stop = true;
+                       obj->cv.notify_one();
+                   }
+
+                   break;
+               }
 
                 //処理が長引いたら 1。。。
                 //std::this_thread::sleep_for(6s);
