@@ -94,6 +94,7 @@ namespace mxnet2license {
 
             obj->cv2.wait(lock, [obj] { return obj->m_runUpdate; });
             {
+                //m_stopが立っている状態で呼び出されたら即座に終了
                 if (obj->m_stop == true) break;
 
                 short ret = mxnet2::rLogIn_MatrixNet(obj->m_userCode, obj->m_appSlot, 1);
@@ -168,6 +169,7 @@ namespace mxnet2license {
             //キーが押された
             if (obj->cv.wait_for(lock, std::chrono::seconds(obj->m_interval), [obj] { return obj->m_stop; }))
             {
+                // m_stopが立っている
                 // login スレッドを終了させる
                 obj->stopLoginThread();
 
