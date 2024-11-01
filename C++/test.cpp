@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <string>
-#include <future>
 #include <locale>
 #include <exception>
 
