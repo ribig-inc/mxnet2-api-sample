@@ -118,7 +118,7 @@ tail -f syslog | grep mxnet2
 	C-Linux - lib フォルダの arm/intel の libmxnet2api.so を /usr/libに
 	コピー後、ビルド
 
-		g++ -o test test.cpp loginupdate.cpp -l mxnet2api -l pthread -l dl
+		g++ -o test test.cpp mxnet2license.cpp -l mxnet2api -l pthread -l dl
 
 	/usr/libにコピーした mxnet2api が見つからないというエラーがでたら
 	ライブラリディレクトリのキャッシュを更新してみてください。
