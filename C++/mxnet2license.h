@@ -12,7 +12,6 @@ typedef void (*ExitAppCallback)();
 
 namespace mxnet2 {
 
-
     class License final {
         std::thread     m_waitThread;
         std::thread     m_loginThread;
