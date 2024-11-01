@@ -38,6 +38,7 @@ namespace mxnet2 {
         static void WaitProc(License* obj);
 
     public:
+        License() = delete;
         License(const License&) = delete;
         License& operator=(const License&) = delete;
 
